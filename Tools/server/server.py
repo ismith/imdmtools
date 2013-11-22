@@ -317,9 +317,13 @@ class do_mdm:
         print "%sReceived %4d bytes: %s" % (HIGH, len(web.data()), NORMAL),
 
         if pl.get('Status') == 'Idle':
-            print HIGH + "Idle Status" + NORMAL
-            rd = current_command
-            print "%sSent: %s%s" % (HIGH, rd['Command']['RequestType'], NORMAL)
+            if current_command != None:
+                print HIGH + "Idle Status" + NORMAL
+                rd = current_command
+                current_command = None
+                print "%sSent: %s%s" % (HIGH, rd['Command']['RequestType'], NORMAL)
+            else:
+                return ''
 #            print HIGH, rd, NORMAL
 
         elif pl.get('MessageType') == 'TokenUpdate':
@@ -366,7 +370,7 @@ def home_page():
 
     drop_list = ''
     for key in sorted(mdm_commands.iterkeys()):
-        if current_command['Command']['RequestType'] == key:
+        if current_command != None and current_command['Command']['RequestType'] == key:
             selected = 'selected'
         else:
             selected = ''
